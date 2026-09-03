@@ -1,7 +1,5 @@
 package ru.edu.qamid.uiTests;
 
-import static org.junit.Assert.assertTrue;
-
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
@@ -25,7 +23,8 @@ import ru.edu.qamid.ui.AppActivity;
 public class AuthTest {
 
     @Rule
-    public ActivityScenarioRule<AppActivity> activityScenarioRule = new ActivityScenarioRule<>(AppActivity.class);
+    public ActivityScenarioRule<AppActivity> activityScenarioRule =
+            new ActivityScenarioRule<>(AppActivity.class);
 
     private AuthPage authPage;
     private MainPage mainPage;
@@ -45,8 +44,8 @@ public class AuthTest {
 
     @Test
     @Story("Позитивный сценарий авторизации")
-    @Description("Пользователь вводит корректный логин и пароль и успешно входит в приложение")
-    public void testPositiveLogin() {
+    @Description("TC-001: Успешный вход с валидными данными (login2 / password2)")
+    public void testPositiveLogin_TC001() {
         Allure.step("Ввод логина и пароля");
         authPage.enterLogin("login2");
         authPage.enterPassword("password2");
@@ -55,13 +54,13 @@ public class AuthTest {
         authPage.clickLogin();
 
         mainPage.waitForMainScreen();
-        assertTrue(mainPage.checkIsOnNewsScreen());
+        mainPage.checkIsOnNewsScreen();
     }
 
     @Test
     @Story("Негативный сценарий авторизации")
-    @Description("При вводе неверного логина и пароля появляется сообщение об ошибке (тест может падать из-за короткого времени жизни Toast)")
-    public void testNegativeLoginWrongCredentials() {
+    @Description("TC-003: Вход с неверным логином и/или паролем. Тест может падать из-за нестабильности Toast-сообщений (ожидаемое поведение)")
+    public void testNegativeLoginWrongCredentials_TC003() {
         Allure.step("Ввод неверных данных");
         authPage.enterLogin("wrong");
         authPage.enterPassword("wrong");
@@ -75,8 +74,8 @@ public class AuthTest {
 
     @Test
     @Story("Негативный сценарий авторизации")
-    @Description("При пустых полях появляется сообщение об ошибке (тест может падать из-за короткого времени жизни Toast)")
-    public void testNegativeLoginEmptyFields() {
+    @Description("TC-004: Вход с пустыми полями. Тест может падать из-за нестабильности Toast-сообщений (ожидаемое поведение)")
+    public void testNegativeLoginEmptyFields_TC004() {
         Allure.step("Ввод пустых значений");
         authPage.enterLogin("");
         authPage.enterPassword("");
@@ -90,8 +89,8 @@ public class AuthTest {
 
     @Test
     @Story("Выход из приложения")
-    @Description("После успешного входа пользователь может выйти из аккаунта")
-    public void testLogout() {
+    @Description("TC-007: Выход из личного кабинета через меню")
+    public void testLogout_TC007() {
         Allure.step("Авторизация пользователя");
         authPage.enterLogin("login2");
         authPage.enterPassword("password2");
@@ -99,13 +98,14 @@ public class AuthTest {
 
         mainPage.waitForMainScreen();
         mainPage.logout();
+
         authPage.waitForAuthPageLoaded();
     }
 
     @Test
     @Story("Выход и повторный вход")
-    @Description("Повторная авторизация после выхода без перезапуска приложения")
-    public void testLogoutAndReLoginWithoutRestart() {
+    @Description("TC-008: Выход и повторный вход без перезапуска приложения")
+    public void testLogoutAndReLoginWithoutRestart_TC008() {
         Allure.step("Первая авторизация");
         authPage.enterLogin("login2");
         authPage.enterPassword("password2");
@@ -121,6 +121,7 @@ public class AuthTest {
         authPage.enterPassword("password2");
         authPage.clickLogin();
         mainPage.waitForMainScreen();
-        assertTrue(mainPage.checkIsOnNewsScreen());
+
+        mainPage.checkIsOnNewsScreen();
     }
 }

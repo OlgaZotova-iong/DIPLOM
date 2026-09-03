@@ -15,37 +15,26 @@ import androidx.test.espresso.ViewAction;
 
 import org.hamcrest.Matcher;
 
-import io.qameta.allure.kotlin.Step;
+import io.qameta.allure.kotlin.Allure;
 import ru.edu.qamid.R;
 
 public class MainPage {
 
     private static final long MAIN_SCREEN_TIMEOUT = 20_000L;
 
-    @Step("Проверка отображения главного экрана")
-    public boolean checkIsOnNewsScreen() {
-        try {
-            onView(withId(R.id.main_news_list_container))
-                    .check(matches(isDisplayed()));
-
-            return true;
-        } catch (Throwable exception) {
-            return false;
-        }
-    }
-
-    @Step("Ожидание открытия главного экрана")
     public void waitForMainScreen() {
-        onView(isRoot()).perform(
-                waitForView(
-                        R.id.main_news_list_container,
-                        MAIN_SCREEN_TIMEOUT
-                )
-        );
+        Allure.step("Ожидание открытия главного экрана");
+        onView(isRoot()).perform(waitForView(R.id.main_news_list_container, MAIN_SCREEN_TIMEOUT));
     }
 
-    @Step("Выход из личного кабинета через меню")
+    public void checkIsOnNewsScreen() {
+        Allure.step("Проверка, что открыт главный экран (Новости)");
+        onView(withId(R.id.main_news_list_container))
+                .check(matches(isDisplayed()));
+    }
+
     public void logout() {
+        Allure.step("Выход из личного кабинета через меню");
         onView(withId(R.id.authorization_image_button))
                 .perform(click());
 
@@ -54,10 +43,7 @@ public class MainPage {
                 .perform(click());
     }
 
-    private static ViewAction waitForView(
-            int viewId,
-            long timeout
-    ) {
+    private static ViewAction waitForView(final int viewId, final long timeout) {
         return new ViewAction() {
             @Override
             public Matcher<View> getConstraints() {
@@ -70,17 +56,12 @@ public class MainPage {
             }
 
             @Override
-            public void perform(
-                    UiController uiController,
-                    View rootView
-            ) {
-                long endTime =
-                        System.currentTimeMillis() + timeout;
+            public void perform(UiController uiController, View rootView) {
+                long endTime = System.currentTimeMillis() + timeout;
 
                 while (System.currentTimeMillis() < endTime) {
-                    for (View view :
-                            androidx.test.espresso.util.TreeIterables
-                                    .breadthFirstViewTraversal(rootView)) {
+                    for (View view : androidx.test.espresso.util.TreeIterables
+                            .breadthFirstViewTraversal(rootView)) {
 
                         if (view.getId() == viewId) {
                             if (view.isShown()) {
@@ -88,15 +69,10 @@ public class MainPage {
                             }
                         }
                     }
-
                     uiController.loopMainThreadForAtLeast(200);
                 }
 
-                throw new AssertionError(
-                        "Главный экран не появился за "
-                                + timeout
-                                + " мс"
-                );
+                throw new AssertionError("Главный экран не появился за " + timeout + " мс");
             }
         };
     }
