@@ -9,7 +9,6 @@ import static androidx.test.espresso.matcher.RootMatchers.isPlatformPopup;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.isRoot;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
-import static org.hamcrest.Matchers.allOf;
 
 import android.view.MenuItem;
 import android.view.View;
@@ -31,6 +30,12 @@ public class NewsPage {
     public void waitForNewsScreenLoaded() {
         Allure.step("Ожидание загрузки экрана с новостями");
         onView(isRoot()).perform(waitForView(R.id.main_news_list_container, DEFAULT_TIMEOUT));
+    }
+
+    // Новый метод специально для экрана управления новостями
+    public void waitForNewsManagementScreenLoaded() {
+        Allure.step("Ожидание загрузки экрана управления новостями");
+        onView(isRoot()).perform(waitForView(R.id.news_list_recycler_view, DEFAULT_TIMEOUT));
     }
 
     public void expandNewsList() {
@@ -74,7 +79,6 @@ public class NewsPage {
                 .perform(click());
     }
 
-    // Кастомный матчер по ID пункта меню (MenuItemImpl.getItemId())
     private static Matcher<Object> menuItemWithId(final int menuItemId) {
         return new TypeSafeMatcher<Object>() {
             @Override
