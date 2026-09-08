@@ -72,7 +72,6 @@ public class CreateNewsPage {
         throw new AssertionError("Экран создания новости не отобразился");
     }
 
-    // ==================== Вспомогательные методы ====================
 
     private void waitForViewAndPerform(int viewId, androidx.test.espresso.ViewAction action) {
         for (int i = 0; i < MAX_RETRIES; i++) {

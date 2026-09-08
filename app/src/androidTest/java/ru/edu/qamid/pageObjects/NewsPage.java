@@ -32,7 +32,6 @@ public class NewsPage {
         onView(isRoot()).perform(waitForView(R.id.main_news_list_container, DEFAULT_TIMEOUT));
     }
 
-    // Новый метод специально для экрана управления новостями
     public void waitForNewsManagementScreenLoaded() {
         Allure.step("Ожидание загрузки экрана управления новостями");
         onView(isRoot()).perform(waitForView(R.id.news_list_recycler_view, DEFAULT_TIMEOUT));
@@ -79,6 +78,28 @@ public class NewsPage {
                 .perform(click());
     }
 
+    public void openQuotesSection() {
+        Allure.step("Переход в раздел Цитаты");
+        onView(withId(R.id.our_mission_image_button))
+                .check(matches(isDisplayed()))
+                .perform(click());
+
+        onView(isRoot()).perform(waitForView(R.id.our_mission_item_list_recycler_view, DEFAULT_TIMEOUT));
+    }
+
+    public void openNewsControlPanel() {
+        Allure.step("Открытие панели управления новостями");
+        onView(withId(R.id.news_edit_button))
+                .check(matches(isDisplayed()))
+                .perform(click());
+    }
+
+    public void checkOurMissionScreenIsDisplayed() {
+        Allure.step("Проверка экрана 'О приложении'");
+        onView(withId(R.id.our_mission_title_text_view))
+                .check(matches(isDisplayed()));
+    }
+
     private static Matcher<Object> menuItemWithId(final int menuItemId) {
         return new TypeSafeMatcher<Object>() {
             @Override
@@ -96,26 +117,6 @@ public class NewsPage {
         };
     }
 
-    public void openQuotesSection() {
-        Allure.step("Переход в раздел Цитаты");
-        onView(withId(R.id.our_mission_image_button))
-                .check(matches(isDisplayed()))
-                .perform(click());
-    }
-
-    public void openNewsControlPanel() {
-        Allure.step("Открытие панели управления новостями");
-        onView(withId(R.id.news_edit_button))
-                .check(matches(isDisplayed()))
-                .perform(click());
-    }
-
-    public void checkOurMissionScreenIsDisplayed() {
-        Allure.step("Проверка экрана 'О приложении'");
-        onView(withId(R.id.our_mission_title_text_view))
-                .check(matches(isDisplayed()));
-    }
-
     private static ViewAction waitForView(final int viewId, final long timeout) {
         return new ViewAction() {
             @Override
@@ -131,7 +132,6 @@ public class NewsPage {
             @Override
             public void perform(UiController uiController, View rootView) {
                 long endTime = System.currentTimeMillis() + timeout;
-
                 while (System.currentTimeMillis() < endTime) {
                     for (View view : androidx.test.espresso.util.TreeIterables
                             .breadthFirstViewTraversal(rootView)) {
@@ -144,7 +144,6 @@ public class NewsPage {
                     }
                     uiController.loopMainThreadForAtLeast(200);
                 }
-
                 throw new AssertionError("Элемент с id " + viewId + " не найден за " + timeout + " мс");
             }
         };
