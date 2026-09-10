@@ -7,14 +7,10 @@ import static androidx.test.espresso.action.ViewActions.swipeDown;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.RootMatchers.isPlatformPopup;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
-import static androidx.test.espresso.matcher.ViewMatchers.isRoot;
+import static androidx.test.espresso.matcher.ViewMatchers.withEffectiveVisibility;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 
 import android.view.MenuItem;
-import android.view.View;
-
-import androidx.test.espresso.UiController;
-import androidx.test.espresso.ViewAction;
 
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
@@ -22,6 +18,7 @@ import org.hamcrest.TypeSafeMatcher;
 
 import io.qameta.allure.kotlin.Allure;
 import ru.edu.qamid.R;
+import ru.edu.qamid.utils.WaitHelper;
 
 public class NewsPage {
 
@@ -29,12 +26,12 @@ public class NewsPage {
 
     public void waitForNewsScreenLoaded() {
         Allure.step("Ожидание загрузки экрана с новостями");
-        onView(isRoot()).perform(waitForView(R.id.main_news_list_container, DEFAULT_TIMEOUT));
+        WaitHelper.waitForView(R.id.main_news_list_container, DEFAULT_TIMEOUT);
     }
 
     public void waitForNewsManagementScreenLoaded() {
         Allure.step("Ожидание загрузки экрана управления новостями");
-        onView(isRoot()).perform(waitForView(R.id.news_list_recycler_view, DEFAULT_TIMEOUT));
+        WaitHelper.waitForView(R.id.news_list_recycler_view, DEFAULT_TIMEOUT);
     }
 
     public void expandNewsList() {
@@ -60,8 +57,9 @@ public class NewsPage {
 
     public void checkNewsListIsDisplayed() {
         Allure.step("Проверка отображения списка новостей");
+        WaitHelper.waitForView(R.id.news_list_recycler_view, DEFAULT_TIMEOUT);
         onView(withId(R.id.news_list_recycler_view))
-                .check(matches(isDisplayed()));
+                .check(matches(withEffectiveVisibility(androidx.test.espresso.matcher.ViewMatchers.Visibility.VISIBLE)));
     }
 
     public void openMainMenu() {
@@ -84,7 +82,7 @@ public class NewsPage {
                 .check(matches(isDisplayed()))
                 .perform(click());
 
-        onView(isRoot()).perform(waitForView(R.id.our_mission_item_list_recycler_view, DEFAULT_TIMEOUT));
+        WaitHelper.waitForView(R.id.our_mission_item_list_recycler_view, DEFAULT_TIMEOUT);
     }
 
     public void openNewsControlPanel() {
@@ -113,38 +111,6 @@ public class NewsPage {
                     return ((MenuItem) item).getItemId() == menuItemId;
                 }
                 return false;
-            }
-        };
-    }
-
-    private static ViewAction waitForView(final int viewId, final long timeout) {
-        return new ViewAction() {
-            @Override
-            public Matcher<View> getConstraints() {
-                return isRoot();
-            }
-
-            @Override
-            public String getDescription() {
-                return "Ожидание элемента с id: " + viewId;
-            }
-
-            @Override
-            public void perform(UiController uiController, View rootView) {
-                long endTime = System.currentTimeMillis() + timeout;
-                while (System.currentTimeMillis() < endTime) {
-                    for (View view : androidx.test.espresso.util.TreeIterables
-                            .breadthFirstViewTraversal(rootView)) {
-
-                        if (view.getId() == viewId) {
-                            if (view.isShown()) {
-                                return;
-                            }
-                        }
-                    }
-                    uiController.loopMainThreadForAtLeast(200);
-                }
-                throw new AssertionError("Элемент с id " + viewId + " не найден за " + timeout + " мс");
             }
         };
     }
