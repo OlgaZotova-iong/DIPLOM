@@ -43,9 +43,11 @@ captures/
 *.nar
 *.ear
 *.zip
+!allure-results.zip
 *.tar.gz
 *.rar
 
 ### Gradle ###
 !gradle/wrapper/gradle-wrapper.jar
 gradle.properties
+allure-report/

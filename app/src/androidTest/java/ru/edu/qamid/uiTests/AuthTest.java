@@ -16,6 +16,7 @@ import io.qameta.allure.kotlin.Story;
 import ru.edu.qamid.pageObjects.AuthPage;
 import ru.edu.qamid.pageObjects.MainPage;
 import ru.edu.qamid.ui.AppActivity;
+import ru.edu.qamid.listeners.AllureScreenshotRule;
 
 @Epic("Авторизация")
 @Feature("Авторизация пользователя")
@@ -25,6 +26,8 @@ public class AuthTest {
     @Rule
     public ActivityScenarioRule<AppActivity> activityScenarioRule =
             new ActivityScenarioRule<>(AppActivity.class);
+    @Rule
+    public AllureScreenshotRule screenshotRule = new AllureScreenshotRule();
 
     private AuthPage authPage;
     private MainPage mainPage;

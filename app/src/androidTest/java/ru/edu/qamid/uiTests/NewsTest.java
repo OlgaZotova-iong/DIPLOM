@@ -16,6 +16,7 @@ import ru.edu.qamid.pageObjects.AuthPage;
 import ru.edu.qamid.pageObjects.MainPage;
 import ru.edu.qamid.pageObjects.NewsPage;
 import ru.edu.qamid.ui.AppActivity;
+import ru.edu.qamid.listeners.AllureScreenshotRule;
 
 @Epic("Новости")
 @Feature("Работа со списком новостей")
@@ -25,6 +26,8 @@ public class NewsTest {
     @Rule
     public ActivityScenarioRule<AppActivity> activityScenarioRule =
             new ActivityScenarioRule<>(AppActivity.class);
+    @Rule
+    public AllureScreenshotRule screenshotRule = new AllureScreenshotRule();
 
     private AuthPage authPage;
     private MainPage mainPage;

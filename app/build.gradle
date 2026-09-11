@@ -20,6 +20,8 @@ android {
 
         testInstrumentationRunner "ru.edu.qamid.runner.AllureTestRunner"
         testInstrumentationRunnerArguments clearPackageData: 'true'
+
+        testInstrumentationRunnerArguments resultsDir: '/sdcard/allure-results'
     }
 
     compileOptions {
@@ -75,7 +77,7 @@ dependencies {
     kapt "androidx.room:room-compiler:$room_version"
     implementation "androidx.room:room-ktx:$room_version"
 
-    // Retrofit & OkHttp
+    // Retrofit &amp; OkHttp
     implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
     implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
     implementation "com.google.code.gson:gson:$gson_version"
@@ -129,7 +131,7 @@ dependencies {
     androidTestImplementation("com.google.dagger:hilt-android-testing:$hilt_version")
     kaptAndroidTest("com.google.dagger:hilt-compiler:$hilt_version")
 
-    // ✅ Allure для Android (единственно верные зависимости)
+    // ✅ Allure для Android
     androidTestImplementation "io.qameta.allure:allure-kotlin-android:2.4.0"
     androidTestImplementation "io.qameta.allure:allure-kotlin-junit4:2.4.0"
 }
@@ -137,9 +139,9 @@ dependencies {
 task downloadAllureResults(type: Exec) {
     group = 'verification'
     description = 'Скачивает результаты Allure с устройства в папку allure-results'
-    def appId = "ru.edu.qamid"
-    commandLine 'adb', 'pull', "/data/data/${appId}/files/allure-results", 'allure-results'
+    commandLine 'adb', 'pull', '/sdcard/allure-results', 'allure-results'
 }
+
 tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
 }

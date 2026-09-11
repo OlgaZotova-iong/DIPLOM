@@ -18,6 +18,7 @@ import ru.edu.qamid.pageObjects.CreateNewsPage;
 import ru.edu.qamid.pageObjects.MainPage;
 import ru.edu.qamid.pageObjects.NewsPage;
 import ru.edu.qamid.ui.AppActivity;
+import ru.edu.qamid.listeners.AllureScreenshotRule;
 
 @Epic("Управление новостями")
 @Feature("CRUD операций с новостями")
@@ -27,6 +28,8 @@ public class NewsManagementTest {
     @Rule
     public ActivityScenarioRule<AppActivity> activityScenarioRule =
             new ActivityScenarioRule<>(AppActivity.class);
+    @Rule
+    public AllureScreenshotRule screenshotRule = new AllureScreenshotRule();
 
     private AuthPage authPage;
     private MainPage mainPage;
