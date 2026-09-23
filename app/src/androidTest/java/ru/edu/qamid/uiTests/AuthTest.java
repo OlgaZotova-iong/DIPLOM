@@ -13,10 +13,11 @@ import io.qameta.allure.kotlin.Description;
 import io.qameta.allure.kotlin.Epic;
 import io.qameta.allure.kotlin.Feature;
 import io.qameta.allure.kotlin.Story;
+import ru.edu.qamid.data.TestData;
+import ru.edu.qamid.listeners.AllureScreenshotRule;
 import ru.edu.qamid.pageObjects.AuthPage;
 import ru.edu.qamid.pageObjects.MainPage;
 import ru.edu.qamid.ui.AppActivity;
-import ru.edu.qamid.listeners.AllureScreenshotRule;
 
 @Epic("Авторизация")
 @Feature("Авторизация пользователя")
@@ -37,6 +38,7 @@ public class AuthTest {
         authPage = new AuthPage();
         mainPage = new MainPage();
 
+
         try {
             mainPage.waitForMainScreen();
             mainPage.logout();
@@ -46,27 +48,32 @@ public class AuthTest {
     }
 
     @Test
-    @Story("Позитивный сценарий авторизации")
-    @Description("TC-001: Успешный вход с валидными данными (login2 / password2)")
+    @Story("Позитивный сценарий")
+    @Description("TC-001: Успешный вход с валидными данными")
     public void testPositiveLogin_TC001() {
-        Allure.step("Ввод логина и пароля");
-        authPage.enterLogin("login2");
-        authPage.enterPassword("password2");
+        Allure.step("Ввод логина");
+        authPage.enterLogin(TestData.VALID_LOGIN);
+
+        Allure.step("Ввод пароля");
+        authPage.enterPassword(TestData.VALID_PASSWORD);
 
         Allure.step("Нажатие кнопки Войти");
         authPage.clickLogin();
 
+        Allure.step("Проверка что открылся главный экран");
         mainPage.waitForMainScreen();
         mainPage.checkIsOnNewsScreen();
     }
 
     @Test
-    @Story("Негативный сценарий авторизации")
-    @Description("TC-003: Вход с неверным логином и/или паролем. Тест может падать из-за нестабильности Toast-сообщений (ожидаемое поведение)")
+    @Story("Негативный сценарий")
+    @Description("TC-003: Вход с неверным логином и паролем")
     public void testNegativeLoginWrongCredentials_TC003() {
-        Allure.step("Ввод неверных данных");
-        authPage.enterLogin("wrong");
-        authPage.enterPassword("wrong");
+        Allure.step("Ввод неверного логина");
+        authPage.enterLogin(TestData.WRONG_LOGIN);
+
+        Allure.step("Ввод неверного пароля");
+        authPage.enterPassword(TestData.WRONG_PASSWORD);
 
         Allure.step("Нажатие кнопки Войти");
         authPage.clickLogin();
@@ -76,10 +83,10 @@ public class AuthTest {
     }
 
     @Test
-    @Story("Негативный сценарий авторизации")
-    @Description("TC-004: Вход с пустыми полями. Тест может падать из-за нестабильности Toast-сообщений (ожидаемое поведение)")
+    @Story("Негативный сценарий")
+    @Description("TC-004: Вход с пустыми полями")
     public void testNegativeLoginEmptyFields_TC004() {
-        Allure.step("Ввод пустых значений");
+        Allure.step("Оставляем поля пустыми");
         authPage.enterLogin("");
         authPage.enterPassword("");
 
@@ -95,23 +102,25 @@ public class AuthTest {
     @Description("TC-007: Выход из личного кабинета через меню")
     public void testLogout_TC007() {
         Allure.step("Авторизация пользователя");
-        authPage.enterLogin("login2");
-        authPage.enterPassword("password2");
+        authPage.enterLogin(TestData.VALID_LOGIN);
+        authPage.enterPassword(TestData.VALID_PASSWORD);
         authPage.clickLogin();
-
         mainPage.waitForMainScreen();
+
+        Allure.step("Выход из аккаунта");
         mainPage.logout();
 
+        Allure.step("Проверка что открылся экран авторизации");
         authPage.waitForAuthPageLoaded();
     }
 
     @Test
     @Story("Выход и повторный вход")
     @Description("TC-008: Выход и повторный вход без перезапуска приложения")
-    public void testLogoutAndReLoginWithoutRestart_TC008() {
+    public void testLogoutAndReLogin_TC008() {
         Allure.step("Первая авторизация");
-        authPage.enterLogin("login2");
-        authPage.enterPassword("password2");
+        authPage.enterLogin(TestData.VALID_LOGIN);
+        authPage.enterPassword(TestData.VALID_PASSWORD);
         authPage.clickLogin();
         mainPage.waitForMainScreen();
 
@@ -120,11 +129,12 @@ public class AuthTest {
         authPage.waitForAuthPageLoaded();
 
         Allure.step("Повторная авторизация");
-        authPage.enterLogin("login2");
-        authPage.enterPassword("password2");
+        authPage.enterLogin(TestData.VALID_LOGIN);
+        authPage.enterPassword(TestData.VALID_PASSWORD);
         authPage.clickLogin();
-        mainPage.waitForMainScreen();
 
+        Allure.step("Проверка что открылся главный экран");
+        mainPage.waitForMainScreen();
         mainPage.checkIsOnNewsScreen();
     }
 }

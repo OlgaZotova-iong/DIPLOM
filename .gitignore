@@ -51,3 +51,4 @@ captures/
 !gradle/wrapper/gradle-wrapper.jar
 gradle.properties
 allure-report/
+allure-results/

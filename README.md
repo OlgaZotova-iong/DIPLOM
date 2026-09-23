@@ -8,6 +8,8 @@
 В проекте присутствуют тесты для разделов авторизации, новостей,
 управления новостями и цитат.
 
+---
+
 ## Технологии
 
 | Технология | Версия |
@@ -19,6 +21,8 @@
 | UiAutomator | 2.4.0 |
 | Gradle | — |
 
+---
+
 ## Структура тестовых классов
 
 | Класс | Описание |
@@ -28,20 +32,42 @@
 | `NewsManagementTest` | Тесты раздела «Управление новостями» |
 | `QuotesTest` | Тесты раздела «Цитаты» |
 
+---
+
+## Структура вспомогательных классов
+
+| Класс | Описание |
+|---|---|
+| `TestData` | Централизованное хранение тестовых данных |
+| `AuthPage` | Page Object для экрана авторизации |
+| `MainPage` | Page Object для главного экрана |
+| `NewsPage` | Page Object для раздела «Новости» |
+| `ControlPanelPage` | Page Object для панели управления новостями |
+| `CreateNewsPage` | Page Object для формы создания/редактирования новости |
+| `QuotesPage` | Page Object для раздела «Цитаты» |
+| `AllureScreenshotRule` | Правило для прикрепления скриншотов к Allure-отчёту |
+| `WaitHelper` | Утилита для ожидания появления элементов на экране |
+
+---
+
 ## Запуск тестов
 
 ### Предварительные требования
 
 - Подключённое Android-устройство или запущенный эмулятор
 - Android SDK установлен и настроен
-- `adb` доступен в переменной окружения PATH
+- `adb` доступен в переменной окружения `PATH`
+
+---
 
 ### Через Android Studio
 
-1. Откройте проект.
+1. Откройте проект в Android Studio.
 2. Подключите устройство или запустите эмулятор.
 3. Найдите нужный тестовый класс в папке `androidTest`.
-4. Запустите тест через зелёную кнопку Run.
+4. Запустите тест через зелёную кнопку **Run**.
+
+---
 
 ### Через командную строку
 
@@ -49,98 +75,69 @@
 
 #### Запуск всех тестов
 
-bash
+```bash
 ./gradlew connectedDebugAndroidTest
-
-
-#### Запуск отдельного класса
-
-bash
-
-
-Авторизация
-
+Markdown
+Запуск отдельного класса
+# Авторизация
 ./gradlew connectedDebugAndroidTest \
 -Pandroid.testInstrumentationRunnerArguments.class=ru.edu.qamid.uiTests.AuthTest
 
-
-Новости
-
+# Новости
 ./gradlew connectedDebugAndroidTest \
 -Pandroid.testInstrumentationRunnerArguments.class=ru.edu.qamid.uiTests.NewsTest
 
-
-Управление новостями
-
+# Управление новостями
 ./gradlew connectedDebugAndroidTest \
 -Pandroid.testInstrumentationRunnerArguments.class=ru.edu.qamid.uiTests.NewsManagementTest
 
-
-Цитаты
-
+# Цитаты
 ./gradlew connectedDebugAndroidTest \
 -Pandroid.testInstrumentationRunnerArguments.class=ru.edu.qamid.uiTests.QuotesTest
-
-
-#### Запуск отдельного теста
-
-bash
+Bash
+Запуск отдельного теста
 ./gradlew connectedDebugAndroidTest \
 -Pandroid.testInstrumentationRunnerArguments.class=ru.edu.qamid.uiTests.AuthTest#testPositiveLogin_TC001
-
-
-#### Шаблон команды для любого теста
-
-bash
+Bash
+Шаблон команды для любого теста
 ./gradlew connectedDebugAndroidTest \
 -Pandroid.testInstrumentationRunnerArguments.class=ru.edu.qamid.uiTests.<ИмяКласса>#<имяМетода>
+Bash
+Формирование Allure-отчёта
+Шаг 1 — Запустить тесты
 
-
-## Формирование Allure-отчёта
-
-**Шаг 1 — Запустить тесты**
-
-bash
 ./gradlew connectedDebugAndroidTest
+Bash
+Шаг 2 — Скачать результаты с устройства
 
-
-**Шаг 2 — Скачать результаты с устройства**
-
-bash
 ./gradlew downloadAllureResults
+Bash
+Результаты будут скопированы в папку allure-results в корне проекта.
 
+Шаг 3 — Сформировать отчёт
 
-Результаты будут скопированы в папку `allure-results` в корне проекта.
-
-**Шаг 3 — Сформировать отчёт**
-
-bash
 allure serve allure-results
-
-
-## Известные ограничения
-
-Тесты `TC-003` и `TC-004` (негативные сценарии авторизации)
-нестабильны при запуске через Gradle из-за ограничений Espresso
-при работе с Toast-сообщениями.
-
-Тесты выполняются последовательно на одном подключённом устройстве
-или эмуляторе.
-
-## Технические ограничения
-
-При подключении библиотеки `allure-android` возникли конфликты зависимостей
-(dependency conflict) с текущей конфигурацией проекта. В качестве альтернативы
-используется `allure-kotlin`, которая поддерживает аннотации
-(@Epic, @Feature, @Story, @Description) и логирование шагов (Allure.step()),
-но не поддерживает автоматическое прикрепление скриншотов (attachment)
-при падении тестов. По этой причине скриншоты в Allure отчёте отсутствуют.
-
-## Результаты тестирования
-
-Архив с результатами прогона тестов находится в файле `allure-results.zip`
+Bash
+Результаты тестирования
+Архив с результатами прогона тестов находится в файле allure-results.zip
 в корне проекта.
 
 Для просмотра отчёта:
-1. Распакуйте `allure-results.zip`
-2. Выполните команду `allure serve <папка с результатами>`
+
+Распакуйте allure-results.zip
+Выполните команду:
+allure serve <папка с результатами>
+Bash
+Известные ограничения
+Тесты TC-003 и TC-004 (негативные сценарии авторизации) нестабильны
+при запуске через Gradle из-за ограничений Espresso при работе
+с Toast-сообщениями на Android 11+.
+Тесты выполняются последовательно на одном подключённом устройстве
+или эмуляторе.
+Технические ограничения
+При подключении библиотеки allure-android возникли конфликты зависимостей
+с текущей конфигурацией проекта. В качестве альтернативы используется
+allure-kotlin, которая поддерживает аннотации (@Epic, @Feature,
+@Story, @Description) и логирование шагов (Allure.step()), но не
+поддерживает автоматическое прикрепление скриншотов при падении тестов.
+По этой причине скриншоты в Allure-отчёте отсутствуют.

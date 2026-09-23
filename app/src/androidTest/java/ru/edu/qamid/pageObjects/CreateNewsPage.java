@@ -71,7 +71,7 @@ public class CreateNewsPage {
                     .check(matches(isDisplayed()))
                     .perform(click());
         } catch (Throwable ignored) {
-            // Кнопка уже исчезла — это нормально
+
         }
     }
 

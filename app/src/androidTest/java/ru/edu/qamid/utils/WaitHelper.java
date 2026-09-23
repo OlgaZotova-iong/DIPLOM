@@ -1,54 +1,85 @@
 package ru.edu.qamid.utils;
 
 import static androidx.test.espresso.Espresso.onView;
-import static androidx.test.espresso.matcher.ViewMatchers.isRoot;
-
-import android.view.View;
-
-import androidx.test.espresso.UiController;
-import androidx.test.espresso.ViewAction;
-
-import org.hamcrest.Matcher;
+import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.contrib.RecyclerViewActions.scrollTo;
+import static androidx.test.espresso.matcher.ViewMatchers.hasDescendant;
+import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static androidx.test.espresso.matcher.ViewMatchers.withId;
+import static androidx.test.espresso.matcher.ViewMatchers.withText;
+import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.not;
 
 public class WaitHelper {
 
-    private static final long DEFAULT_TIMEOUT = 15_000L;
-
-    public static void waitForView(int viewId) {
-        waitForView(viewId, DEFAULT_TIMEOUT);
+    public static void waitForView(int viewId, long timeoutMs) {
+        long startTime = System.currentTimeMillis();
+        while (System.currentTimeMillis() - startTime < timeoutMs) {
+            try {
+                onView(withId(viewId)).check(matches(isDisplayed()));
+                return;
+            } catch (Throwable ignored) {
+            }
+        }
+        onView(withId(viewId)).check(matches(isDisplayed()));
     }
 
-    public static void waitForView(final int viewId, final long timeout) {
-        onView(isRoot()).perform(new ViewAction() {
-            @Override
-            public Matcher<View> getConstraints() {
-                return isRoot();
+    public static void waitForViewWithText(
+            int containerId, String text, long timeoutMs) {
+        long startTime = System.currentTimeMillis();
+        while (System.currentTimeMillis() - startTime < timeoutMs) {
+            try {
+                onView(allOf(
+                        withId(containerId),
+                        hasDescendant(withText(text))
+                )).check(matches(isDisplayed()));
+                return;
+            } catch (Throwable ignored) {
             }
+        }
+        onView(allOf(
+                withId(containerId),
+                hasDescendant(withText(text))
+        )).check(matches(isDisplayed()));
+    }
 
-            @Override
-            public String getDescription() {
-                return "Ожидание элемента с id: " + viewId;
+    public static void waitForViewWithoutText(
+            int containerId, String text, long timeoutMs) {
+        long startTime = System.currentTimeMillis();
+        while (System.currentTimeMillis() - startTime < timeoutMs) {
+            try {
+                onView(withId(containerId))
+                        .check(matches(not(hasDescendant(withText(text)))));
+                return;
+            } catch (Throwable ignored) {
             }
+        }
+        onView(withId(containerId))
+                .check(matches(not(hasDescendant(withText(text)))));
+    }
 
-            @Override
-            public void perform(UiController uiController, View rootView) {
-                long endTime = System.currentTimeMillis() + timeout;
-
-                while (System.currentTimeMillis() < endTime) {
-                    for (View view : androidx.test.espresso.util.TreeIterables
-                            .breadthFirstViewTraversal(rootView)) {
-
-                        if (view.getId() == viewId) {
-                            if (view.isShown()) {
-                                return;
-                            }
-                        }
-                    }
-                    uiController.loopMainThreadForAtLeast(200);
-                }
-
-                throw new AssertionError("Элемент с id " + viewId + " не появился за " + timeout + " мс");
+    public static void waitForItemInRecyclerView(
+            int recyclerViewId, int itemViewId, String text, long timeoutMs) {
+        long startTime = System.currentTimeMillis();
+        while (System.currentTimeMillis() - startTime < timeoutMs) {
+            try {
+                onView(withId(recyclerViewId))
+                        .perform(scrollTo(
+                                hasDescendant(allOf(
+                                        withId(itemViewId),
+                                        withText(text)
+                                ))
+                        ));
+                return;
+            } catch (Throwable ignored) {
             }
-        });
+        }
+        onView(withId(recyclerViewId))
+                .perform(scrollTo(
+                        hasDescendant(allOf(
+                                withId(itemViewId),
+                                withText(text)
+                        ))
+                ));
     }
 }
